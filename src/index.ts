@@ -14,6 +14,7 @@ const main = async () => {
 	const airtableService = new AirtableService(apiKey);
 	const server = new AirtableMCPServer(airtableService);
 	const transport = new StdioServerTransport();
+	await transport.start();
 	await server.connect(transport);
 };
 
