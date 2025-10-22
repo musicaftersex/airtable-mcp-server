@@ -27,12 +27,13 @@ constructor(private readonly airtableService: IAirtableService) {
     version: '1.8.0',
   });
 
-  // ✅ Universal manifest response for AgentX
+  // AgentX manifest
   this.server.setRequestHandler('get_manifest', async () => {
+    console.error('✅ Received get_manifest'); // goes to STDERR (safe)
     return {
       name: 'io.github.musicaftersex/airtable-mcp-server',
       version: '1.8.0',
-      description: 'A Model Context Protocol server providing read and write access to Airtable databases.',
+      description: 'Provides Airtable access over Model Context Protocol.',
       tools: [],
       resources: [],
       capabilities: {},
