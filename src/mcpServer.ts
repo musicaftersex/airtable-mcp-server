@@ -21,13 +21,25 @@ import {
 export class AirtableMCPServer implements IAirtableMCPServer {
 	private readonly server: McpServer;
 
-	constructor(private readonly airtableService: IAirtableService) {
-	this.server = new McpServer({
-	name: 'io.github.musicaftersex/airtable-mcp-server',
-  	version: '1.8.0',
-	});
-		this.initializeHandlers();
-	}
+constructor(private readonly airtableService: IAirtableService) {
+  this.server = new McpServer({
+    name: 'io.github.musicaftersex/airtable-mcp-server',
+    version: '1.8.0',
+  });
+
+  // ✅ Add explicit manifest handler for AgentX compatibility
+  this.server.setRequestHandler('get_manifest', async () => {
+    return {
+      name: 'io.github.musicaftersex/airtable-mcp-server',
+      version: '1.8.0',
+      description: 'A Model Context Protocol server providing read and write access to Airtable databases.',
+      tools: [],
+      resources: [],
+    };
+  });
+
+  this.initializeHandlers();
+}
 
 	async connect(transport: Transport): Promise<void> {
 		await this.server.connect(transport);
