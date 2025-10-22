@@ -501,4 +501,20 @@ constructor(private readonly airtableService: IAirtableService) {
 			},
 		);
 	}
+
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
+import { AirtableMcpServer } from './airtableMcpServer';
+import { AirtableService } from './airtableService'; // adjust path if needed
+
+const airtableService = new AirtableService();
+const mcpServer = new AirtableMcpServer(airtableService);
+
+// connect over stdio so AgentX can talk to us
+const transport = new StdioServerTransport();
+
+mcpServer.connect(transport).catch(err => {
+  console.error('❌ Failed to start MCP server:', err);
+  process.exit(1);
+});
+
 }
