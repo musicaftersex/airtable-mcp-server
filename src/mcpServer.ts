@@ -1,4 +1,6 @@
 import {McpServer, ResourceTemplate} from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { AirtableService } from './airtableService.js';
 import {type Transport} from '@modelcontextprotocol/sdk/shared/transport.js';
 import {z} from 'zod';
 import {
@@ -27,20 +29,9 @@ constructor(private readonly airtableService: IAirtableService) {
     version: '1.8.0',
   });
 
-  this.server.setRequestHandler('get_manifest', async () => {
-    console.error('✅ Received get_manifest');
-    return {
-      name: 'io.github.musicaftersex/airtable-mcp-server',
-      version: '1.8.0',
-      description: 'Provides Airtable access over Model Context Protocol.',
-      tools: [],
-      resources: [],
-      capabilities: {},
-    };
-  });
+this.initializeHandlers();
 
-  this.initializeHandlers();
-}
+  }
 
 	async connect(transport: Transport): Promise<void> {
 		await this.server.connect(transport);
@@ -501,18 +492,3 @@ constructor(private readonly airtableService: IAirtableService) {
 		);
 	}
 }
-
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
-import { AirtableMcpServer } from './airtableMcpServer';
-import { AirtableService } from './airtableService'; // adjust path if needed
-
-const airtableService = new AirtableService();
-const mcpServer = new AirtableMcpServer(airtableService);
-
-// connect over stdio so AgentX can talk to us
-const transport = new StdioServerTransport();
-
-mcpServer.connect(transport).catch(err => {
-  console.error('❌ Failed to start MCP server:', err);
-  process.exit(1);
-});
