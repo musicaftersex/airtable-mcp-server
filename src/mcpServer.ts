@@ -22,10 +22,10 @@ export class AirtableMCPServer implements IAirtableMCPServer {
 	private readonly server: McpServer;
 
 	constructor(private readonly airtableService: IAirtableService) {
-		this.server = new McpServer({
-			name: 'airtable-mcp-server',
-			version: '0.1.0',
-		});
+	this.server = new McpServer({
+	name: 'io.github.musicaftersex/airtable-mcp-server',
+  	version: '1.8.0',
+	});
 		this.initializeHandlers();
 	}
 
