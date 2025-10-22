@@ -500,6 +500,7 @@ constructor(private readonly airtableService: IAirtableService) {
 			},
 		);
 	}
+}
 
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio';
 import { AirtableMcpServer } from './airtableMcpServer';
@@ -515,5 +516,3 @@ mcpServer.connect(transport).catch(err => {
   console.error('❌ Failed to start MCP server:', err);
   process.exit(1);
 });
-
-}
