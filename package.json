@@ -1,31 +1,34 @@
 {
   "name": "airtable-mcp-server",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "A Model Context Protocol server that provides read and write access to Airtable databases. This server enables LLMs to inspect database schemas, then read and write records.",
   "license": "MIT",
-  "author": "Adam Jones (domdomegg)",
+  "author": "Adam Jones (domdomegg), forked and maintained by musicaftersex",
   "repository": {
     "type": "git",
-    "url": "https://github.com/domdomegg/airtable-mcp-server.git"
+    "url": "https://github.com/musicaftersex/airtable-mcp-server.git"
   },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "bin"
   ],
-  "bin": "dist/index.js",
-  "mcpName": "io.github.domdomegg/airtable-mcp-server",
+  "bin": {
+    "airtable-mcp-server": "bin/entrypoint.js"
+  },
+  "mcpName": "io.github.musicaftersex/airtable-mcp-server",
   "scripts": {
-    "start": "npm run build && node ./dist/index.js",
+    "clean": "rm -rf dist",
+    "build": "tsc --project tsconfig.build.json",
+    "prepare": "npm run build",
+    "start": "node ./bin/entrypoint.js",
     "test": "vitest run",
     "test:watch": "vitest --watch",
     "lint": "eslint",
-    "clean": "rm -rf dist",
-    "build": "tsc --project tsconfig.build.json",
     "build:watch": "nodemon --watch src --ext ts --exec \"npm run build\"",
-    "build:mcpb": "./build-mcpb.sh",
-    "prepublishOnly": "npm run clean && npm run build"
+    "build:mcpb": "./build-mcpb.sh"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.1",
@@ -41,5 +44,8 @@
     "tsconfig-domdomegg": "^1.0.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
