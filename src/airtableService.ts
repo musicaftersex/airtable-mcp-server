@@ -56,9 +56,11 @@ export class AirtableService implements IAirtableService {
 			// provided options.maxRecords, we enforce it client-side (stop after we've
 			// accumulated that many records) so the server returns consistent results
 			// without relying on the provider-side cap.
-			if (options.filterByFormula) {
-				queryParams.append('filterByFormula', options.filterByFormula);
-			}
+if (options.filterByFormula) {
+    console.error('🔍 filterByFormula input:', options.filterByFormula);
+    queryParams.append('filterByFormula', options.filterByFormula);
+    console.error('🔍 Query string:', queryParams.toString());
+}
 
 			if (options.view) {
 				queryParams.append('view', options.view);
@@ -78,14 +80,15 @@ export class AirtableService implements IAirtableService {
 				});
 			}
 
-			// eslint-disable-next-line no-await-in-loop
-			const response = await this.fetchFromAPI(
-				`/v0/${baseId}/${tableId}?${queryParams.toString()}`,
-				z.object({
-					records: z.array(z.object({id: z.string(), fields: z.record(z.any())})),
-					offset: z.string().optional(),
-				}),
-			);
+// eslint-disable-next-line no-await-in-loop
+const response = await this.fetchFromAPI(
+    `/v0/${baseId}/${tableId}?${queryParams.toString()}`,
+    z.object({
+        records: z.array(z.object({id: z.string(), fields: z.record(z.any())})),
+        offset: z.string().optional(),
+    }),
+);
+console.error('🔍 Response received, record count:', response.records.length);
 
 			// Append the page's records
 			allRecords = allRecords.concat(response.records);
