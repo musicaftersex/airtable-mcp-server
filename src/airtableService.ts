@@ -50,10 +50,12 @@ export class AirtableService implements IAirtableService {
 
 		do {
 			const queryParams = new URLSearchParams();
-			if (options.maxRecords) {
-				queryParams.append('maxRecords', options.maxRecords.toString());
-			}
 
+			// NOTE: Do not send maxRecords to the Airtable API. Instead, we paginate
+			// through pages until the API stops returning an offset. If the caller
+			// provided options.maxRecords, we enforce it client-side (stop after we've
+			// accumulated that many records) so the server returns consistent results
+			// without relying on the provider-side cap.
 			if (options.filterByFormula) {
 				queryParams.append('filterByFormula', options.filterByFormula);
 			}
@@ -85,9 +87,24 @@ export class AirtableService implements IAirtableService {
 				}),
 			);
 
+			// Append the page's records
 			allRecords = allRecords.concat(response.records);
+
+			// If the caller asked for a maximum number of records, stop once we've reached it.
+			if (options.maxRecords && allRecords.length >= options.maxRecords) {
+				// No need to ask Airtable for more pages
+				offset = undefined;
+				break;
+			}
+
+			// Continue if Airtable indicates there are more pages
 			offset = response.offset;
 		} while (offset);
+
+		// If the caller requested a cap, return at most that many items.
+		if (options.maxRecords && allRecords.length > options.maxRecords) {
+			return allRecords.slice(0, options.maxRecords);
+		}
 
 		return allRecords;
 	}
