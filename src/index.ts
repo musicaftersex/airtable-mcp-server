@@ -14,8 +14,8 @@ const main = async () => {
 	const airtableService = new AirtableService(apiKey);
 	const server = new AirtableMCPServer(airtableService);
 	const transport = new StdioServerTransport();
+    await server.connect(transport);
 	await transport.start();
-	await server.connect(transport);
 };
 
 main().catch((error: unknown) => {
