@@ -10,7 +10,6 @@ const main = async () => {
   const transport = new StdioServerTransport();
 
   await mcpServer.connect(transport);
-  await transport.start();
 };
 
 main().catch((error: unknown) => {
