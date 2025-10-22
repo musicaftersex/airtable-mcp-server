@@ -27,9 +27,8 @@ constructor(private readonly airtableService: IAirtableService) {
     version: '1.8.0',
   });
 
-  // AgentX manifest
   this.server.setRequestHandler('get_manifest', async () => {
-    console.error('✅ Received get_manifest'); // goes to STDERR (safe)
+    console.error('✅ Received get_manifest');
     return {
       name: 'io.github.musicaftersex/airtable-mcp-server',
       version: '1.8.0',
