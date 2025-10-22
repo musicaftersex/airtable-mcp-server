@@ -22,16 +22,10 @@ export class AirtableMCPServer implements IAirtableMCPServer {
 	private readonly server: McpServer;
 
 constructor(private readonly airtableService: IAirtableService) {
-this.server.setRequestHandler('get_manifest', async () => {
-  return {
+  this.server = new McpServer({
     name: 'io.github.musicaftersex/airtable-mcp-server',
     version: '1.8.0',
-    description: 'Provides Airtable access over Model Context Protocol.',
-    tools: [],
-    resources: [],
-    capabilities: {}
-  };
-});
+  });
 
   // AgentX manifest
   this.server.setRequestHandler('get_manifest', async () => {
