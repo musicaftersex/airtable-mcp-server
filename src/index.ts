@@ -10,7 +10,16 @@ const main = async () => {
   const server = new AirtableMCPServer(airtableService);
   const transport = new StdioServerTransport();
 
-  await server.connect(transport);
+await this.server.connect(transport);
+
+// Debug: log all incoming/outgoing messages (safe)
+(transport as any).input.on('data', (chunk: Buffer) => {
+  console.error('⬅️  From AgentX:', chunk.toString());
+});
+(transport as any).output.on('data', (chunk: Buffer) => {
+  console.error('➡️  To AgentX:', chunk.toString());
+});
+  
   await transport.start();
 };
 
