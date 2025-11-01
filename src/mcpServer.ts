@@ -201,12 +201,32 @@ this.initializeHandlers();
 				inputSchema: {
 					baseId: z.string().describe('The ID of the base'),
 					detailLevel: z.enum(['tableIdentifiersOnly', 'identifiersOnly', 'full']).optional().default('full').describe('Level of detail to return'),
+					offset: z.number().optional().describe('Starting index for pagination (0-based)'),
+					limit: z.number().optional().describe('Maximum number of tables to return'),
+					tableIds: z.array(z.string()).optional().describe('Filter to only return tables with these IDs'),
 				},
 			},
 			async (args) => {
 				const parsedArgs = ListTablesArgsSchema.parse(args);
 				const schema = await this.airtableService.getBaseSchema(parsedArgs.baseId);
-				const result = schema.tables.map((table) => {
+
+				// Filter by tableIds if provided
+				let filteredTables = schema.tables;
+				if (parsedArgs.tableIds && parsedArgs.tableIds.length > 0) {
+					filteredTables = schema.tables.filter((table) =>
+						parsedArgs.tableIds!.includes(table.id)
+					);
+				}
+
+				// Apply pagination (offset and limit)
+				const offset = parsedArgs.offset ?? 0;
+				const limit = parsedArgs.limit;
+				const paginatedTables = limit
+					? filteredTables.slice(offset, offset + limit)
+					: filteredTables.slice(offset);
+
+				// Map to requested detail level
+				const result = paginatedTables.map((table) => {
 					switch (parsedArgs.detailLevel) {
 						case 'tableIdentifiersOnly':
 							return {
@@ -238,8 +258,17 @@ this.initializeHandlers();
 							};
 					}
 				});
+
+				// Return result with metadata about pagination
+				const response = {
+					tables: result,
+					totalCount: filteredTables.length,
+					offset,
+					limit: limit ?? filteredTables.length,
+				};
+
 				return {
-					content: [{type: 'text', text: JSON.stringify(result)}],
+					content: [{type: 'text', text: JSON.stringify(response)}],
 				};
 			},
 		);

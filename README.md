@@ -146,7 +146,14 @@ Create either a global (`~/.cursor/mcp.json`) or project-specific (`.cursor/mcp.
   - Input parameters:
     - `baseId` (string, required): The ID of the Airtable base
     - `detailLevel` (string, optional): The amount of detail to get about the tables (`tableIdentifiersOnly`, `identifiersOnly`, or `full`)
-  - Returns table ID, name, description, fields, and views (to the given `detailLevel`)
+    - `offset` (number, optional): Starting index for pagination (0-based)
+    - `limit` (number, optional): Maximum number of tables to return
+    - `tableIds` (array, optional): Filter to only return tables with these IDs
+  - Returns an object with:
+    - `tables`: Array of table data (to the given `detailLevel`)
+    - `totalCount`: Total number of tables matching the filter
+    - `offset`: The offset used
+    - `limit`: The limit used
 
 - **describe_table**
   - Gets detailed information about a specific table

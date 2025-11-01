@@ -440,6 +440,9 @@ export const DescribeTableArgsSchema = z.object({
 export const ListTablesArgsSchema = z.object({
 	baseId: z.string(),
 	detailLevel: TableDetailLevelSchema.optional().default('full'),
+	offset: z.number().optional().describe('Starting index for pagination (0-based)'),
+	limit: z.number().optional().describe('Maximum number of tables to return'),
+	tableIds: z.array(z.string()).optional().describe('Filter to only return tables with these IDs'),
 });
 
 export const GetRecordArgsSchema = z.object({
